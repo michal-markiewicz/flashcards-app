@@ -1,5 +1,9 @@
 "use strict";
 
+const cardSound = new Audio('audio/single_card_deal.ogg');
+const correctAnswerSound = new Audio('audio/correct-answer.mp3');
+const wrongAnswerSound = new Audio ('audio/wrong-answer.mp3');
+
 const cardContainer = document.getElementById('card-container');
 let currentCard = null;
 const nextQuestionButton = document.getElementById('next-question');
@@ -9,14 +13,29 @@ nextQuestionButton.addEventListener('click', showCard);
 window.addEventListener('click', (e) => {
     if (e.target.className === "answer")
     {
-        console.log(e.target.textContent);
         if (e.target.textContent.includes(currentCard.answer))
         {
-            alert('Correct!');
+            if (e.target.style.color == "rgb(39, 184, 61)")
+            {
+                return "do nothing";
+            }
+            else 
+            {
+                e.target.style.color = "rgb(39, 184, 61)";
+                correctAnswerSound.play();
+            }
         }
         else 
         {
-            alert('Incorrect!');
+            if (e.target.style.color == "rgb(184, 39, 39)")
+            {
+                return "do nothing";
+            }
+            else 
+            {
+                e.target.style.color = "rgb(184, 39, 39)";
+                wrongAnswerSound.play();
+            }
         }
     }
 })
@@ -78,7 +97,7 @@ function showCard()
 
     if (validCards.length === 0)
     {
-        return alert('No more cards!');
+        return "no more cards!";
     }
 
     const randomCard = validCards[Math.floor(Math.random() * validCards.length)];
@@ -114,7 +133,7 @@ function showCard()
     cardContainer.appendChild(cardElement);
 
     cardElement.outerHTML = `    
-    <div class="card">
+    <div class="card" id="current-card">
         <div class="question">
             <h2>${randomCard.question}</h2>
         </div>
@@ -126,5 +145,9 @@ function showCard()
             <span class="answer">D. ${answerElements[3]}</span>
         </div>
     </div>`;
+
+    cardSound.play().catch(() => {
+        return "cannot play audio without user interaction";
+    });
 }
 

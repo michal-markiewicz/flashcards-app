@@ -18,7 +18,6 @@ body
 .card 
 {
     border: 2px solid #333;
-    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -46,6 +45,7 @@ body
 
 .card .question h2 
 {
+    text-align: center;
     font-weight: 600;
     margin: 0;
 }
@@ -60,4 +60,9 @@ body
     cursor: pointer;
     bottom: 25px;
     background-color: #fff;
+}
+
+.question, .answers 
+{
+    width: 100%;
 }
