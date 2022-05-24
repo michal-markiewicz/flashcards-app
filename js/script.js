@@ -5,37 +5,46 @@ const correctAnswerSound = new Audio('audio/correct-answer.mp3');
 const wrongAnswerSound = new Audio ('audio/wrong-answer.mp3');
 
 const cardContainer = document.getElementById('card-container');
-let currentCard = null;
+
 const nextQuestionButton = document.getElementById('next-question');
+const resetButton = document.getElementById('reset');
+const resultsButton = document.getElementById('results');
 
 nextQuestionButton.addEventListener('click', showCard);
+resetButton.addEventListener('click', resetCards);
+resultsButton.addEventListener('click', showResults);
+
+const currentCard = {
+    answer: null,
+    answeredCorrectly: null
+}
+
+if (localStorage.getItem('correctAnswers') === null || localStorage.getItem('wrongAnswers') === null)
+{
+    localStorage.setItem('correctAnswers', "0");
+    localStorage.setItem('wrongAnswers', "0");
+}
 
 window.addEventListener('click', (e) => {
-    if (e.target.className === "answer")
+    if (e.target.className === "answer" && currentCard.answeredCorrectly === null)
     {
         if (e.target.textContent.includes(currentCard.answer))
         {
-            if (e.target.style.color == "rgb(39, 184, 61)")
-            {
-                return "do nothing";
-            }
-            else 
-            {
-                e.target.style.color = "rgb(39, 184, 61)";
-                correctAnswerSound.play();
-            }
+            currentCard.answeredCorrectly = true;
+            results.currentSession.correctAnswers++;
+            results.currentDeck.correctAnswers++;
+            results.lifetime.updateLocalStorage(1, 0);
+            e.target.style.color = "rgb(39, 184, 61)";
+            correctAnswerSound.play();
         }
         else 
         {
-            if (e.target.style.color == "rgb(184, 39, 39)")
-            {
-                return "do nothing";
-            }
-            else 
-            {
-                e.target.style.color = "rgb(184, 39, 39)";
-                wrongAnswerSound.play();
-            }
+            currentCard.answeredCorrectly = false;
+            results.currentSession.wrongAnswers++;
+            results.currentDeck.wrongAnswers++;
+            results.lifetime.updateLocalStorage(0, 1);
+            e.target.style.color = "rgb(184, 39, 39)";
+            wrongAnswerSound.play();
         }
     }
 })
@@ -73,12 +82,63 @@ const deck = {
     },
 }
 
+const results = {
+    lifetime: 
+    {
+        correctAnswers: Number(localStorage.getItem('correctAnswers')),
+        wrongAnswers: Number(localStorage.getItem('wrongAnswers')),
+        correctAnswersPercentage: function() 
+        {
+            const result = this.correctAnswers / (this.correctAnswers + this.wrongAnswers) * 100;
+            return result.toFixed(2) + '%'; 
+        },
+        updateLocalStorage: function(correctAnswers = 0, wrongAnswers = 0)
+        {
+            if (correctAnswers > 0)
+            {
+                let lifetimeCorrectAnswers = Number(localStorage.getItem('correctAnswers'));
+                lifetimeCorrectAnswers += correctAnswers;
+                localStorage.setItem('correctAnswers', `${lifetimeCorrectAnswers}`);
+            }
+            else if (wrongAnswers > 0)
+            {
+                let lifetimeWrongAnswers = Number(localStorage.getItem('wrongAnswers'));
+                lifetimeWrongAnswers += wrongAnswers;
+                localStorage.setItem('wrongAnswers', `${lifetimeWrongAnswers}`);
+            }
+        }
+    },
+    currentSession:
+    {
+        correctAnswers: 0,
+        wrongAnswers: 0,
+        correctAnswersPercentage: function() 
+        {
+            const result = this.correctAnswers / (this.correctAnswers + this.wrongAnswers) * 100;
+            return result.toFixed(2) + '%'; 
+        }
+    },
+    currentDeck:
+    {
+        correctAnswers: 0,
+        wrongAnswers: 0,
+        correctAnswersPercentage: function() 
+        {
+            const result = this.correctAnswers / (this.correctAnswers + this.wrongAnswers) * 100;
+            return result.toFixed(2) + '%'; 
+        }
+    }
+}
+
 window.onload = showCard();
 
 
 function showCard()
 {
+    currentCard.answer = null;
+    currentCard.answeredCorrectly = null;
     cardContainer.innerHTML = '';
+
     const cardElement = document.createElement('div');
     
     const validCards = [];
@@ -101,7 +161,7 @@ function showCard()
     }
 
     const randomCard = validCards[Math.floor(Math.random() * validCards.length)];
-    currentCard = randomCard;
+    currentCard.answer = randomCard.answer;
     randomCard.hasAlreadyShown = true;
 
     const cardAnswer = randomCard.answer;
@@ -150,4 +210,27 @@ function showCard()
         return "cannot play audio without user interaction";
     });
 }
+
+function resetCards()
+{
+    results.currentDeck.correctAnswers = 0;
+    results.currentDeck.wrongAnswers = 0;
+
+     for (let card in deck)
+     {
+         deck[card].hasAlreadyShown = false; 
+     }
+
+     showCard();
+}
+
+function showResults()
+{
+    alert(
+`Current session success rate: ${results.currentSession.correctAnswersPercentage()}
+Current deck success rate: ${results.currentDeck.correctAnswersPercentage()}
+Lifetime success rate: ${results.lifetime.correctAnswersPercentage()}`
+    )
+}
+
 

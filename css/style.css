@@ -2,7 +2,6 @@
 {
     box-sizing: border-box;
     font-family: 'Open Sans', sans-serif;
-    overflow: hidden;
 }
 
 body 
@@ -11,8 +10,9 @@ body
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     background-color: #2d4d9c;
+    padding: 10px;
 }
 
 .card 
@@ -23,7 +23,7 @@ body
     justify-content: space-evenly;
     align-items: center;
     background-color: #eee;
-    height: 400px;
+    min-height: 400px;
     width: 300px;
     border-radius: 15px;
     padding-left: 15px;
@@ -36,6 +36,7 @@ body
     cursor: pointer;
     margin-top: 6px;
     margin-bottom: 6px;
+    font-size: 16px;
 }
 
 .answers span:hover 
@@ -48,21 +49,58 @@ body
     text-align: center;
     font-weight: 600;
     margin: 0;
+    font-size: 24px;
 }
 
-#next-question 
+.button 
 {
     border-radius: 15px;
     border: 2px solid #333;
-    padding: 15px;
-    position: absolute;
-    right: 25px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-align: center;
     cursor: pointer;
-    bottom: 25px;
     background-color: #fff;
+    flex-grow: 1;
+    font-size: 14px;
 }
 
 .question, .answers 
 {
     width: 100%;
+}
+
+.buttons-container 
+{
+    width: 300px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+@media (min-width: 800px)
+{
+    .buttons-container 
+    {
+        width: 500px;
+        position: absolute;
+        right: 30px;
+        bottom: 30px;
+    }
+
+    .answers span
+    {
+        font-size: 18px;
+    }
+
+    .card .question h2 
+    {
+        font-size: 28px;
+    }
+
+    .button 
+    {
+        font-size: 16px;
+    }
 }
