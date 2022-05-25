@@ -52,44 +52,78 @@ window.addEventListener('click', (e) => {
 const deck = {
     1: 
     {
-        question: 'What is scope?',
-        answer: `Baby don't hurt me, don't hurt me, no more!`,
+        question: 'Getters and setters',
+        answer: `Allow to have more control over creation of new properties inside an object`,
         hasAlreadyShown: false
     },
     2: 
     {
-        question: 'What is life?',
-        answer: 'Just a journey',
+        question: 'Symbol',
+        answer: `It's a unique and hidden value`,
         hasAlreadyShown: false
     },
     3: 
     {
-        question: 'Who am I?',
-        answer: 'Idk',
+        question: 'Function binding',
+        answer: `Allows to set different "this" when calling function`,
         hasAlreadyShown: false
     },
     4: 
     {
-        question: 'Wtf is this man?',
-        answer: 'Not a clue',
+        question: 'Decorators',
+        answer: 'Functions that give additional functionality to other functions',
         hasAlreadyShown: false
     },
     5: 
     {
-        question: 'Can I do something about that?',
-        answer: 'Nah',
+        question: 'Map object',
+        answer: 'Contains keys associated with values',
         hasAlreadyShown: false
     },
+    6: 
+    {
+        question: 'Set object',
+        answer: 'Contains unique values',
+        hasAlreadyShown: false
+    },
+    7: 
+    {
+        question: 'WeakMap',
+        answer: 'Contains keys (key must be an object) and values, both are garbage collected when there is no reference to them',
+        hasAlreadyShown: false
+    },
+    8: 
+    {
+        question: 'WeakSet',
+        answer: 'Contains unique objects which are garbage collected if there is no reference to them',
+        hasAlreadyShown: false
+    },
+    9: 
+    {
+        question: 'What is "this" of arrow function?',
+        answer: 'It equals to "this" of an object it was created inside',
+        hasAlreadyShown: false
+    },
+    10: 
+    {
+        question: 'Garbage collection',
+        answer: 'Process of removing variables, objects etc. from memory if no longer used',
+        hasAlreadyShown: false
+    }
 }
 
 const results = {
     lifetime: 
     {
-        correctAnswers: Number(localStorage.getItem('correctAnswers')),
-        wrongAnswers: Number(localStorage.getItem('wrongAnswers')),
+        getCorrectAnswers: function() {
+            return Number(localStorage.getItem('correctAnswers'));
+        },
+        getWrongAnswers: function() {
+            return Number(localStorage.getItem('wrongAnswers'));
+        },
         correctAnswersPercentage: function() 
         {
-            const result = this.correctAnswers / (this.correctAnswers + this.wrongAnswers) * 100;
+            const result = this.getCorrectAnswers() / (this.getCorrectAnswers() + this.getWrongAnswers()) * 100;
             return result.toFixed(2) + '%'; 
         },
         updateLocalStorage: function(correctAnswers = 0, wrongAnswers = 0)
@@ -137,7 +171,6 @@ function showCard()
 {
     currentCard.answer = null;
     currentCard.answeredCorrectly = null;
-    cardContainer.innerHTML = '';
 
     const cardElement = document.createElement('div');
     
@@ -157,8 +190,10 @@ function showCard()
 
     if (validCards.length === 0)
     {
-        return "no more cards!";
+        return alert("No more cards in the deck! Click reset button.");
     }
+
+    cardContainer.innerHTML = '';
 
     const randomCard = validCards[Math.floor(Math.random() * validCards.length)];
     currentCard.answer = randomCard.answer;
