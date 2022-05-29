@@ -124,6 +124,12 @@ const results = {
         correctAnswersPercentage: function() 
         {
             const result = this.getCorrectAnswers() / (this.getCorrectAnswers() + this.getWrongAnswers()) * 100;
+
+            if (Number.isNaN(result))
+            {
+                return "no data";
+            }
+
             return result.toFixed(2) + '%'; 
         },
         updateLocalStorage: function(correctAnswers = 0, wrongAnswers = 0)
@@ -149,6 +155,12 @@ const results = {
         correctAnswersPercentage: function() 
         {
             const result = this.correctAnswers / (this.correctAnswers + this.wrongAnswers) * 100;
+
+            if (Number.isNaN(result))
+            {
+                return "no data";
+            }
+
             return result.toFixed(2) + '%'; 
         }
     },
@@ -159,6 +171,12 @@ const results = {
         correctAnswersPercentage: function() 
         {
             const result = this.correctAnswers / (this.correctAnswers + this.wrongAnswers) * 100;
+
+            if (Number.isNaN(result))
+            {
+                return "no data";
+            }
+
             return result.toFixed(2) + '%'; 
         }
     }
